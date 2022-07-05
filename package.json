@@ -52,5 +52,8 @@
   "browser": {
     "fs": false,
     "path": false
+  },
+  "engines": {
+    "node": "16.10.0"
   }
 }
