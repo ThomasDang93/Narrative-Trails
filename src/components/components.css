@@ -16,4 +16,12 @@ a.navbar-brand {
   .box-shadow {
     box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
   }
+
+  body {
+    text-align: center;
+  }
+  form {
+    width: 300px;
+    margin: 0 auto;
+  }
   

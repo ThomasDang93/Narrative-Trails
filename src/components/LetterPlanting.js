@@ -6,38 +6,15 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { typesBundleForPolkadot } from '@crustio/type-definitions';
 import { Keyring } from '@polkadot/keyring';
 import { Buffer } from 'buffer';
-
+import './components.css';
 const crustChainEndpoint = 'wss://rpc.crust.network'; // More endpoints: https://github.com/crustio/crust-apps/blob/master/packages/apps-config/src/endpoints/production.ts#L9
 const ipfsW3GW = 'https://crustipfs.xyz'; // More web3 authed gateways: https://github.com/crustio/ipfsscan/blob/main/lib/constans.ts#L29
-const crustSeeds = ''; //process.env.CRUST_SEED; // Create account(seeds): https://wiki.crust.network/docs/en/crustAccount
+const crustSeeds = process.env.REACT_APP_CRUST_SEED; //process.env.CRUST_SEED; // Create account(seeds): https://wiki.crust.network/docs/en/crustAccount
 const api = new ApiPromise({
     provider: new WsProvider(crustChainEndpoint),
     typesBundle: typesBundleForPolkadot,
 });
 function LetterPlanting() {
-  
-
-    // Step1: Build JSON
-    // {
-    //     name: "",
-    //     description: "",
-    //     media-uri-image: "" ,
-    //     properties: {
-    //         lattitude: "",
-    //         longitude: "",
-    //         city: "",
-    //         state: "",
-    //         country: "",
-    //         zip: "",
-    //         file: formData.get('File')
-    //     }
-    // }
-
-    // Step 2: Send IPFS URL to smart contract
-    // {
-    //     media-uri-json: ""
-    // }
-    
     const [state, setState] = useState(    {
         name: "",
         lattitude: "",
@@ -47,46 +24,99 @@ function LetterPlanting() {
         state: "",
         country: "",
         zip: "",
+        isLetterBox: true,
         selectedAddress: "",
-        balance: ""
+        balance: "",
+        ipfsurl: ""
     });
+    const [file, setFile] = useState({});
     const handleSubmit = async(event) => {
         event.preventDefault();
-        const formData = new FormData();
-		formData.append('File', state);
-        console.log(formData.get('File'));
+        if(state.name !== "" && state.lattitude !== "" && state.longitude !== "" && 
+            state.description !== "" && state.city !== "" && state.state !== ""
+            && state.country !== "" && state.zip !== "" && state.isLetterBox === true) {
+            const formData = new FormData();
+            formData.append('File', file);
+            console.log(formData.get('File'));
 
-        //[Gateway] Create IPFS instance
-        const pair = ethers.Wallet.createRandom();
-        const sig = await pair.signMessage(pair.address);
-        const authHeaderRaw = `eth-${pair.address}:${sig}`;
-        const authHeader = Buffer.from(authHeaderRaw).toString('base64');
-        const ipfsRemote = create({
-            url: `${ipfsW3GW}/api/v0`,
-            headers: {
-                authorization: `Basic ${authHeader}`
+            //[Gateway] Create IPFS instance
+            const pair = ethers.Wallet.createRandom();
+            const sig = await pair.signMessage(pair.address);
+            const authHeaderRaw = `eth-${pair.address}:${sig}`;
+            const authHeader = Buffer.from(authHeaderRaw).toString('base64');
+            const ipfsRemote = create({
+                url: `${ipfsW3GW}/api/v0`,
+                headers: {
+                    authorization: `Basic ${authHeader}`
+                }
+            });
+
+            // Add IPFS
+            const rst = await addFile(ipfsRemote, formData.get('File')); // Or use IPFS local
+            console.log(rst);
+            setState({ 
+                ...state,
+                ipfsurl: 'https://crustipfs.xyz/ipfs/' + rst.cid
+            });
+            let metaData = {
+                name: state.name,
+                description: state.description,
+                media_uri_image: 'https://crustipfs.xyz/ipfs/' + rst.cid,
+                properties: {
+                    lattitude: state.lattitude,
+                    longitude: state.longitude,
+                    city: state.city,
+                    state: state.state,
+                    country: state.country,
+                    zip: state.zip,
+                    isLetterBox: state.isLetterBox
+                }
+            };
+           
+            const mdf = await addFile(ipfsRemote, JSON.stringify(metaData)); // Or use IPFS local
+            console.log(mdf);
+            // Place storage order
+            await placeStorageOrder(rst.cid, rst.size);
+
+            // Query storage status
+            // Query forever here ...
+            while (true) {
+                const orderStatus = (await getOrderState(rst.cid)).toJSON();
+                console.log('Replica count: ', orderStatus['reported_replica_count']); // Print the replica count
+                await new Promise(f => setTimeout(f, 1500)); // Just wait 1.5s for next chain-query
             }
-        });
 
-        // Add IPFS
-        const rst = await addFile(ipfsRemote, formData.get('File')); // Or use IPFS local
-        console.log(rst);
-
-        // Place storage order
-        await placeStorageOrder(rst.cid, rst.size);
-
-        // Query storage status
-        // Query forever here ...
-        while (true) {
-            const orderStatus = (await getOrderState(rst.cid)).toJSON();
-            console.log('Replica count: ', orderStatus['reported_replica_count']); // Print the replica count
-            await new Promise(f => setTimeout(f, 1500)); // Just wait 1.5s for next chain-query
+        } else {
+            alert("Please enter value for all mandatory fields");
         }
-		
     }
 
-    function handleChange(event) {
-        setState(event.target.files[0]);
+    function handleFileChange(event) {
+        setFile(event.target.files[0]);
+    }
+    function handleLattitudeChange(event) {
+        setState({...state, lattitude: event.target.value});
+    }
+    function handleLongitudeChange(event) {
+        setState({...state, longitude: event.target.value});
+    }
+    function handleCityChange(event) {
+        setState({...state, city: event.target.value});
+    }
+    function handleStateChange(event) {
+        setState({...state, state: event.target.value});
+    }
+    function handleCountryChange(event) {
+        setState({...state, country: event.target.value});
+    }
+    function handleZipChange(event) {
+        setState({...state, zip: event.target.value});
+    }
+    function handleNameChange(event) {
+        setState({...state, name: event.target.value});
+    }
+    function handleDescriptionChange(event) {
+        setState({...state, description: event.target.value});
     }
 
 
@@ -108,7 +138,7 @@ function LetterPlanting() {
         const accounts = await provider.send("eth_requestAccounts", []);
         const balance = await provider.getBalance(accounts[0]);
         const balanceInEther = ethers.utils.formatEther(balance);
-        setState({ selectedAddress: accounts[0], balance: balanceInEther });
+        setState({ ...state, selectedAddress: accounts[0], balance: balanceInEther });
     }
 
     async function placeStorageOrder(fileCid, fileSize) {
@@ -162,11 +192,37 @@ function LetterPlanting() {
     
     return (
         <div>
-            {console.log('State Context: ' + state)}
+            {console.log('State Context: ', state)}
+            {console.log('File Context: ', file)}
+            {console.log("Environment Variables: " + process.env.REACT_APP_CRUST_SEED)}
             {renderMetamask()}
             <form onSubmit={handleSubmit}>
+                <label>Name:
+                    <input type="text" name="name" onChange={handleNameChange}/>
+                </label>
+                <label>Description:
+                    <input type="text" name="description" onChange={handleDescriptionChange}/>
+                </label>
+                <label>Lattitude:
+                    <input type="text" name="lattitude" onChange={handleLattitudeChange}/>
+                </label>
+                <label>Longitude:
+                    <input type="text" name="longitude" onChange={handleLongitudeChange}/>
+                </label>
+                <label>City:
+                    <input type="text" name="city" onChange={handleCityChange}/>
+                </label>
+                <label>State:
+                    <input type="text" name="state" onChange={handleStateChange}/>
+                </label>
+                <label>Country: 
+                    <input type="text" name="country" onChange={handleCountryChange}/>
+                </label>
+                <label>Zip Code:
+                    <input type="text" name="zip" onChange={handleZipChange}/>
+                </label>
                 <h1>Upload Image</h1>
-                <input type="file" onChange={handleChange}/>
+                <input type="file" onChange={handleFileChange}/>
                 <button type="submit" className="btn btn-success float-right ">Mint</button>
             </form>
         </div>
