@@ -1,5 +1,4 @@
-import React, { useState, useEffect, Component, useContext } from 'react';
-import fs from 'fs';
+import React, { useState } from 'react';
 import { create, IPFSHTTPClient } from 'ipfs-http-client';
 import { ethers } from 'ethers';
 import { ApiPromise, WsProvider } from '@polkadot/api';
