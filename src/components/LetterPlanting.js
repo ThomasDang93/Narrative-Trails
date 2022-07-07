@@ -2,18 +2,12 @@ import React, { useState } from 'react';
 import { create, IPFSHTTPClient } from 'ipfs-http-client';
 import { ethers } from 'ethers';
 import { ApiPromise, WsProvider } from '@polkadot/api';
-import { typesBundleForPolkadot } from '@crustio/type-definitions';
 import { Keyring } from '@polkadot/keyring';
 import { Buffer } from 'buffer';
 import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
-const crustChainEndpoint = 'wss://rpc.crust.network'; // More endpoints: https://github.com/crustio/crust-apps/blob/master/packages/apps-config/src/endpoints/production.ts#L9
 const ipfsW3GW = 'https://crustipfs.xyz'; // More web3 authed gateways: https://github.com/crustio/ipfsscan/blob/main/lib/constans.ts#L29
-const crustSeeds = 'abc efg hijk';//process.env.REACT_APP_CRUST_SEED; //process.env.CRUST_SEED; // Create account(seeds): https://wiki.crust.network/docs/en/crustAccount
-// const api = new ApiPromise({
-//     provider: new WsProvider(crustChainEndpoint),
-//     typesBundle: typesBundleForPolkadot,
-// });
+
 const DEPLOYED_CONTRACT_ADDRESS = '0xd44D5CDcb31144Cbb88A1D18ae19d7127e5c3016';
 
 function LetterPlanting() {
@@ -77,16 +71,6 @@ function LetterPlanting() {
            
             const mdf = await addFile(ipfsRemote, JSON.stringify(metaData)); // Or use IPFS local
             console.log(mdf);
-            // // Place storage order
-            // await placeStorageOrder(rst.cid, rst.size);
-
-            // // Query storage status
-            // // Query forever here ...
-            // while (true) {
-            //     const orderStatus = (await getOrderState(rst.cid)).toJSON();
-            //     console.log('Replica count: ', orderStatus['reported_replica_count']); // Print the replica count
-            //     await new Promise(f => setTimeout(f, 1500)); // Just wait 1.5s for next chain-query
-            // }
 
         } else {
             alert("Please enter value for all mandatory fields");
@@ -147,43 +131,6 @@ function LetterPlanting() {
         
     }
 
-    // async function placeStorageOrder(fileCid, fileSize) {
-    //     // 1. Construct place-storage-order tx
-    //     const tips = 0;
-    //     const memo = '';
-    //     const tx = api.tx.market.placeStorageOrder(fileCid, fileSize, tips, memo);
-    //     console.log(tx)
-    //     // 2. Load seeds(account)
-    //     const kr = new Keyring({ type: 'sr25519' });
-    //     const krp = kr.addFromUri(crustSeeds);
-    //     console.log(krp)
-    //     // 3. Send transaction
-    //     await api.isReadyOrError;
-    //     return new Promise((resolve, reject) => {
-    //         tx.signAndSend(krp, ({events = [], status}) => {
-    //             console.log(`💸  Tx status: ${status.type}, nonce: ${tx.nonce}`);
-    
-    //             if (status.isInBlock) {
-    //                 events.forEach(({event: {method, section}}) => {
-    //                     if (method === 'ExtrinsicSuccess') {
-    //                         console.log(`✅  Place storage order success!`);
-    //                         resolve(true);
-    //                     }
-    //                 });
-    //             } else {
-    //                 // Pass it
-    //             }
-    //         }).catch(e => {
-    //             reject(e);
-    //         })
-    //     });
-    // }
-
-    // async function getOrderState(cid) {
-    //     await api.isReadyOrError;
-    //     return await api.query.market.filesV2(cid);
-    // }
-
     function renderMetamask() {
         if (!state.selectedAddress) {
           return (
@@ -202,33 +149,35 @@ function LetterPlanting() {
             {console.log('File Context: ', file)}
             {renderMetamask()}
             <form onSubmit={handleSubmit}>
-                <label>Name:
-                    <input type="text" name="name" onChange={handleNameChange}/>
+                <label htmlFor="letter-plant-name">Name:
+                    <input type="text" name="name" className="form-control" id="letter-plant-name" onChange={handleNameChange}/>
                 </label>
-                <label>Description:
-                    <input type="text" name="description" onChange={handleDescriptionChange}/>
+                <label htmlFor="letter-plant-description">Description:
+                    <textarea type="text" name="description" rows="4" cols="50"className="form-control" id="letter-plant-description" onChange={handleDescriptionChange}/>
                 </label>
-                <label>Lattitude:
-                    <input type="text" name="lattitude" onChange={handleLattitudeChange}/>
+                <label htmlFor="letter-plant-lattitude">Lattitude:
+                    <input type="text" name="lattitude" className="form-control" id="letter-plant-lattitude" onChange={handleLattitudeChange}/>
                 </label>
-                <label>Longitude:
-                    <input type="text" name="longitude" onChange={handleLongitudeChange}/>
+                <label htmlFor="letter-plant-longitude">Longitude:
+                    <input type="text" name="longitude" className="form-control" id="letter-plant-longitude" onChange={handleLongitudeChange}/>
                 </label>
-                <label>City:
-                    <input type="text" name="city" onChange={handleCityChange}/>
+                <label htmlFor="letter-plant-city">City:
+                    <input type="text" name="city" className="form-control" id="letter-plant-city"onChange={handleCityChange}/>
                 </label>
-                <label>State:
-                    <input type="text" name="state" onChange={handleStateChange}/>
+                <label htmlFor="letter-plant-state">State:
+                    <input type="text" name="state" className="form-control" id="letter-plant-state"onChange={handleStateChange}/>
                 </label>
-                <label>Country: 
-                    <input type="text" name="country" onChange={handleCountryChange}/>
+                <label htmlFor="letter-plant-country">Country: 
+                    <input type="text" name="country" className="form-control" id="letter-plant-country"onChange={handleCountryChange}/>
                 </label>
-                <label>Zip Code:
-                    <input type="text" name="zip" onChange={handleZipChange}/>
+                <label htmlFor="letter-plant-zip">Zip Code:
+                    <input type="text" name="zip" className="form-control" id="letter-plant-zip"onChange={handleZipChange}/>
                 </label>
-                <h1>Upload Image</h1>
-                <input type="file" onChange={handleFileChange}/>
-                <button type="submit" className="btn btn-success float-right ">Mint</button>
+                <label htmlFor="letter-plant-upload">Upload: 
+                    <input type="file" className="form-control" id="letter-plant-upload"onChange={handleFileChange}/>
+                </label>
+                <div>&nbsp;</div>
+                <button type="submit" className="btn btn-success">Mint</button>
             </form>
         </div>
     );
