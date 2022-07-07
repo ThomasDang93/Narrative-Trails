@@ -10,10 +10,10 @@ import LetterBoxingABI from "./LetterBoxing.json";
 const crustChainEndpoint = 'wss://rpc.crust.network'; // More endpoints: https://github.com/crustio/crust-apps/blob/master/packages/apps-config/src/endpoints/production.ts#L9
 const ipfsW3GW = 'https://crustipfs.xyz'; // More web3 authed gateways: https://github.com/crustio/ipfsscan/blob/main/lib/constans.ts#L29
 const crustSeeds = 'abc efg hijk';//process.env.REACT_APP_CRUST_SEED; //process.env.CRUST_SEED; // Create account(seeds): https://wiki.crust.network/docs/en/crustAccount
-// const api = new ApiPromise({
-//     provider: new WsProvider(crustChainEndpoint),
-//     typesBundle: typesBundleForPolkadot,
-// });
+const api = new ApiPromise({
+    provider: new WsProvider(crustChainEndpoint),
+    typesBundle: typesBundleForPolkadot,
+});
 const DEPLOYED_CONTRACT_ADDRESS = '0x1D467E6201DbB81a91f2Cc46186bD382DE7a0F68';
 
 function LetterPlanting() {
