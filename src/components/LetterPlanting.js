@@ -149,9 +149,9 @@ function LetterPlanting() {
 
     async function placeStorageOrder(fileCid, fileSize) {
         // 1. Construct place-storage-order tx
-        const tips = 0;
+        const tips = '0';
         const memo = '';
-        const tx = api.tx.market.placeStorageOrder(fileCid, fileSize, tips, memo);
+        const tx = api.tx.market.placeStorageOrder(fileCid, fileSize, parseInt(tips), memo);
         console.log(tx)
         // 2. Load seeds(account)
         const kr = new Keyring({ type: 'sr25519' });
