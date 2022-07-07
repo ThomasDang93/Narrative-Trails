@@ -14,7 +14,7 @@ const crustSeeds = 'abc efg hijk';//process.env.REACT_APP_CRUST_SEED; //process.
 //     provider: new WsProvider(crustChainEndpoint),
 //     typesBundle: typesBundleForPolkadot,
 // });
-const DEPLOYED_CONTRACT_ADDRESS = '0x1D467E6201DbB81a91f2Cc46186bD382DE7a0F68';
+const DEPLOYED_CONTRACT_ADDRESS = '0xd44D5CDcb31144Cbb88A1D18ae19d7127e5c3016';
 
 function LetterPlanting() {
     const [state, setState] = useState(    {
