@@ -1,7 +1,7 @@
 import './App.css';
 import React, { Component} from 'react';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-//import LetterPlanting from './components/LetterPlanting';
+import LetterPlanting from './components/LetterPlanting';
 import Home from './components/Home';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 export default class App extends Component {
@@ -53,7 +53,7 @@ export default class App extends Component {
       <div>
         <Routes>
           <Route path="/" element={Home} /> 
-          {/* <Route path='/plant-letter-box' element={LetterPlanting} /> */}
+          <Route path='/plant-letter-box' element={LetterPlanting} />
         </Routes>
       </div>
       </BrowserRouter>
