@@ -78,7 +78,7 @@ function LetterPlanting() {
             const mdf = await addFile(ipfsRemote, JSON.stringify(metaData)); // Or use IPFS local
             console.log(mdf);
             // Place storage order
-            await placeStorageOrder(rst.cid, rst.size);
+            //await placeStorageOrder(rst.cid, rst.size);
 
             // // Query storage status
             // // Query forever here ...
@@ -147,37 +147,37 @@ function LetterPlanting() {
         
     }
 
-    async function placeStorageOrder(fileCid, fileSize) {
-        // 1. Construct place-storage-order tx
-        const tips = '0';
-        const memo = '';
-        const tx = api.tx.market.placeStorageOrder(fileCid, fileSize, parseInt(tips), memo);
-        console.log(tx)
-        // 2. Load seeds(account)
-        const kr = new Keyring({ type: 'sr25519' });
-        const krp = kr.addFromUri(crustSeeds);
-        console.log(krp)
-        // 3. Send transaction
-        await api.isReadyOrError;
-        return new Promise((resolve, reject) => {
-            tx.signAndSend(krp, ({events = [], status}) => {
-                console.log(`💸  Tx status: ${status.type}, nonce: ${tx.nonce}`);
+    // async function placeStorageOrder(fileCid, fileSize) {
+    //     // 1. Construct place-storage-order tx
+    //     const tips = '0';
+    //     const memo = '';
+    //     const tx = api.tx.market.placeStorageOrder(fileCid, fileSize, parseInt(tips), memo);
+    //     console.log(tx)
+    //     // 2. Load seeds(account)
+    //     const kr = new Keyring({ type: 'sr25519' });
+    //     const krp = kr.addFromUri(crustSeeds);
+    //     console.log(krp)
+    //     // 3. Send transaction
+    //     await api.isReadyOrError;
+    //     return new Promise((resolve, reject) => {
+    //         tx.signAndSend(krp, ({events = [], status}) => {
+    //             console.log(`💸  Tx status: ${status.type}, nonce: ${tx.nonce}`);
     
-                if (status.isInBlock) {
-                    events.forEach(({event: {method, section}}) => {
-                        if (method === 'ExtrinsicSuccess') {
-                            console.log(`✅  Place storage order success!`);
-                            resolve(true);
-                        }
-                    });
-                } else {
-                    // Pass it
-                }
-            }).catch(e => {
-                reject(e);
-            })
-        });
-    }
+    //             if (status.isInBlock) {
+    //                 events.forEach(({event: {method, section}}) => {
+    //                     if (method === 'ExtrinsicSuccess') {
+    //                         console.log(`✅  Place storage order success!`);
+    //                         resolve(true);
+    //                     }
+    //                 });
+    //             } else {
+    //                 // Pass it
+    //             }
+    //         }).catch(e => {
+    //             reject(e);
+    //         })
+    //     });
+    // }
 
     // async function getOrderState(cid) {
     //     await api.isReadyOrError;
