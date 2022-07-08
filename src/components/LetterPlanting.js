@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { create, IPFSHTTPClient } from 'ipfs-http-client';
 import { ethers } from 'ethers';
-import { ApiPromise, WsProvider } from '@polkadot/api';
-import { Keyring } from '@polkadot/keyring';
+import { useWeb3React } from "@web3-react/core";
+import { InjectedConnector } from "@web3-react/injected-connector";
 import { Buffer } from 'buffer';
 import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
@@ -10,7 +10,17 @@ const ipfsW3GW = 'https://crustipfs.xyz'; // More web3 authed gateways: https://
 
 const DEPLOYED_CONTRACT_ADDRESS = '0xd44D5CDcb31144Cbb88A1D18ae19d7127e5c3016';
 
+export const injected = new InjectedConnector();
+
 function LetterPlanting() {
+    const [hasMetamask, setHasMetamask] = useState(false);
+    const {
+        active,
+        activate,
+        chainId,
+        account,
+        library: provider,
+      } = useWeb3React();
     const [state, setState] = useState(    {
         name: "",
         lattitude: "",
@@ -73,7 +83,7 @@ function LetterPlanting() {
             console.log(mdf);
 
         } else {
-            alert("Please enter value for all mandatory fields");
+            alert("Please enter value for all fields");
         }
     }
 
@@ -119,35 +129,53 @@ function LetterPlanting() {
         };
     }
 
-    async function connectToMetamask() {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const accounts = await provider.send("eth_requestAccounts", []);
-        const balance = await provider.getBalance(accounts[0]);
-        const balanceInEther = ethers.utils.formatEther(balance);
-        const lbcontract = new ethers.Contract(DEPLOYED_CONTRACT_ADDRESS, LetterBoxingABI["abi"], provider);
-        let jsonuri = await lbcontract.getFullResources(1);
-        console.log("json uri: ", jsonuri[0].metadataURI);
-        setState({ ...state, selectedAddress: accounts[0], balance: balanceInEther });
-        
-    }
-
-    function renderMetamask() {
-        if (!state.selectedAddress) {
-          return (
-            <button onClick={() => connectToMetamask()}>Connect to Metamask</button>
-          )
-        } else {
-          return (
-            <><p>Welcome {state.selectedAddress}</p><p>Your ETH Balance is: {state.balance}</p></>
-          );
+    async function connect() {
+        if (typeof window.ethereum !== "undefined") {
+          try {
+            await activate(injected);
+            setHasMetamask(true);
+          } catch (e) {
+            console.log(e);
+          }
         }
       }
+
+      async function execute() {
+        if (active) {
+          const signer = provider.getSigner();
+          const contractAddress = DEPLOYED_CONTRACT_ADDRESS;
+          const contract = new ethers.Contract(contractAddress, LetterBoxingABI["abi"], signer);
+          try {
+            let jsonuri = await contract.getFullResources(1);
+            console.log("json uri: ", jsonuri[0].metadataURI);;
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          console.log("Please install MetaMask");
+        }
+      }
+
+      useEffect(() => {
+        if (typeof window.ethereum !== "undefined") {
+          setHasMetamask(true);
+        }
+      });
     
     return (
         <div>
             {console.log('State Context: ', state)}
             {console.log('File Context: ', file)}
-            {renderMetamask()}
+            {hasMetamask ? (
+                active ? (
+                "Connected! "
+                ) : (
+                <button onClick={() => connect()}>Connect</button>
+                )
+            ) : (
+                "Please install metamask"
+            )}
+            {active ? 
             <form onSubmit={handleSubmit}>
                 <label htmlFor="letter-plant-name">Name:
                     <input type="text" name="name" className="form-control" id="letter-plant-name" onChange={handleNameChange}/>
@@ -178,7 +206,8 @@ function LetterPlanting() {
                 </label>
                 <div>&nbsp;</div>
                 <button type="submit" className="btn btn-success">Mint</button>
-            </form>
+            </form> : ""}
+            
         </div>
     );
 }

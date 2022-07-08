@@ -3,6 +3,8 @@ import React, { Component} from 'react';
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import LetterPlanting from './components/LetterPlanting';
 import Home from './components/Home';
+import { Web3ReactProvider } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 export default class App extends Component {
   static displayName = App.name;
@@ -25,7 +27,7 @@ export default class App extends Component {
   
   render () {
     return (
-      <BrowserRouter>
+      <BrowserRouter>  
         <header>
         <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
           <Container>
@@ -51,12 +53,18 @@ export default class App extends Component {
         </Navbar>
       </header>
       <div>
+      <Web3ReactProvider getLibrary={getLibrary}>
         <Routes>
-          <Route path="/" element={Home} /> 
-          <Route path='/plant-letter-box' element={LetterPlanting} /> 
+            <Route path="/" element={Home} /> 
+            <Route path='/plant-letter-box' element={LetterPlanting} /> 
         </Routes>
+      </Web3ReactProvider>
       </div>
       </BrowserRouter>
     );
   }
+}
+
+const getLibrary = (provider) => {
+    return new Web3Provider(provider);
 }
