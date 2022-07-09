@@ -45,8 +45,8 @@ function LetterPlanting() {
 
 
             const pictureResult = await fleek.upload( {
-                apiKey: process.env.FLEEK_API_KEY,
-                apiSecret: process.env.FLEEK_API_SECRET,
+                apiKey: process.env.REACT_APP_FLEEK_API_KEY,
+                apiSecret: process.env.REACT_APP_FLEEK_API_SECRET,
                 key: `narrativetrails/letterbox`,
                 data: formData.get('File'),
               });
@@ -68,8 +68,8 @@ function LetterPlanting() {
             };
 
             const metaDataResult = await fleek.upload( {
-                apiKey: process.env.FLEEK_API_KEY,
-                apiSecret: process.env.FLEEK_API_SECRET,
+                apiKey: process.env.REACT_APP_FLEEK_API_KEY,
+                apiSecret: process.env.REACT_APP_FLEEK_API_SECRET,
                 key: `narrativetrails/letterbox-metadata`,
                 data: JSON.stringify(metaData),
               });
