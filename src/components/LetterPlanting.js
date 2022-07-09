@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { create, IPFSHTTPClient } from 'ipfs-http-client';
 import { ethers } from 'ethers';
 import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
-import { Buffer } from 'buffer';
 import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
-const ipfsW3GW = 'https://crustipfs.xyz'; // More web3 authed gateways: https://github.com/crustio/ipfsscan/blob/main/lib/constans.ts#L29
+import fleek from '@fleekhq/fleek-storage-js';  
 
-const DEPLOYED_CONTRACT_ADDRESS = '0xd44D5CDcb31144Cbb88A1D18ae19d7127e5c3016';
+const DEPLOYED_CONTRACT_ADDRESS = '0xD5565022DE11F6663bfBE872e800D5129C0e20d3';
 
 export const injected = new InjectedConnector();
 
@@ -45,29 +43,19 @@ function LetterPlanting() {
             formData.append('File', file);
             console.log(formData.get('File'));
 
-            //[Gateway] Create IPFS instance
-            const pair = ethers.Wallet.createRandom();
-            const sig = await pair.signMessage(pair.address);
-            const authHeaderRaw = `eth-${pair.address}:${sig}`;
-            const authHeader = Buffer.from(authHeaderRaw).toString('base64');
-            const ipfsRemote = create({
-                url: `${ipfsW3GW}/api/v0`,
-                headers: {
-                    authorization: `Basic ${authHeader}`
-                }
-            });
 
-            // Add IPFS
-            const rst = await addFile(ipfsRemote, formData.get('File')); // Or use IPFS local
-            console.log(rst);
-            setState({ 
-                ...state,
-                ipfsurl: 'https://crustipfs.xyz/ipfs/' + rst.cid
-            });
+            const pictureResult = await fleek.upload( {
+                apiKey: process.env.FLEEK_API_KEY,
+                apiSecret: process.env.FLEEK_API_SECRET,
+                key: `narrativetrails/letterbox`,
+                data: formData.get('File'),
+              });
+
+            console.log(pictureResult);
             let metaData = {
                 name: state.name,
                 description: state.description,
-                media_uri_image: 'https://crustipfs.xyz/ipfs/' + rst.cid,
+                media_uri_image: pictureResult.publicUrl,
                 properties: {
                     lattitude: state.lattitude,
                     longitude: state.longitude,
@@ -78,9 +66,16 @@ function LetterPlanting() {
                     isLetterBox: state.isLetterBox
                 }
             };
-           
-            const mdf = await addFile(ipfsRemote, JSON.stringify(metaData)); // Or use IPFS local
-            console.log(mdf);
+
+            const metaDataResult = await fleek.upload( {
+                apiKey: process.env.FLEEK_API_KEY,
+                apiSecret: process.env.FLEEK_API_SECRET,
+                key: `narrativetrails/letterbox-metadata`,
+                data: JSON.stringify(metaData),
+              });
+           console.log(metaDataResult);
+            // const mdf = await addFile(ipfsRemote, JSON.stringify(metaData)); // Or use IPFS local
+            // console.log(mdf);
 
         } else {
             alert("Please enter value for all fields");
@@ -142,12 +137,19 @@ function LetterPlanting() {
 
       async function execute() {
         if (active) {
+          console.log(provider.getSigner())
           const signer = provider.getSigner();
           const contractAddress = DEPLOYED_CONTRACT_ADDRESS;
           const contract = new ethers.Contract(contractAddress, LetterBoxingABI["abi"], signer);
           try {
-            let jsonuri = await contract.getFullResources(1);
-            console.log("json uri: ", jsonuri[0].metadataURI);;
+            //let jsonuri = await contract.getFullResources(1);
+            // console.log("json uri: ", jsonuri[0].metadataURI);
+             //contract.mintStamp('0x609cB97e273011Ab5D56e73cF880D2880F9922f6', 'https://crustipfs.xyz/ipfs/QmPRADZ7z3wKpcA1N15CJevovVR6eNkwTMvzjxVy1PcTTw')
+            //let value = await contract.feeSetter(0);
+            //let value2 = await contract.feeGetter();
+            //console.log(value2.toNumber());
+            //let value = await contract.isPaused();
+            //console.log(value);
           } catch (error) {
             console.log(error);
           }
@@ -177,6 +179,8 @@ function LetterPlanting() {
             )}
             {active ? 
             <form onSubmit={handleSubmit}>
+                <button onClick={() => execute()}>Execute</button>
+                <div>&nbsp;</div>
                 <label htmlFor="letter-plant-name">Name:
                     <input type="text" name="name" className="form-control" id="letter-plant-name" onChange={handleNameChange}/>
                 </label>
