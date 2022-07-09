@@ -42,8 +42,6 @@ function LetterPlanting() {
             const formData = new FormData();
             formData.append('File', file);
             console.log(formData.get('File'));
-
-
             const pictureResult = await fleek.upload( {
                 apiKey: process.env.REACT_APP_FLEEK_API_KEY,
                 apiSecret: process.env.REACT_APP_FLEEK_API_SECRET,
@@ -73,9 +71,11 @@ function LetterPlanting() {
                 key: `narrativetrails/letterbox-metadata`,
                 data: JSON.stringify(metaData),
               });
-           console.log(metaDataResult);
-            // const mdf = await addFile(ipfsRemote, JSON.stringify(metaData)); // Or use IPFS local
-            // console.log(mdf);
+            console.log(metaDataResult);
+            const signer = provider.getSigner();
+            const contractAddress = DEPLOYED_CONTRACT_ADDRESS;
+            const contract = new ethers.Contract(contractAddress, LetterBoxingABI["abi"], signer);
+            contract.mintLetterbox(account, metaDataResult.publicUrl);
 
         } else {
             alert("Please enter value for all fields");
