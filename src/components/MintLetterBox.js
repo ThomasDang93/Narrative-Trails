@@ -147,7 +147,7 @@ function MintLetterBox() {
             letterboxSize = letterboxSize.length;
             console.log("letterboxSize: ", letterboxSize);
             //stamps letterbox
-            await contract.addResourceToToken(tokenId, userResource0, letterboxSize);
+            // await contract.addResourceToToken(tokenId, userResource0, letterboxSize);
             
             //adding letterbox to stamp
             await contract.addResourceToToken(
@@ -195,7 +195,7 @@ function MintLetterBox() {
         <div>
             {console.log('State Context: ', state)}
             {console.log('File Context: ', file)}
-            <h1>Plant a Letter Box</h1>
+            
             {hasMetamask ? (
                 active ? (
                 "Connected! "
@@ -207,6 +207,7 @@ function MintLetterBox() {
             )}
             {active ? 
             <form onSubmit={handleSubmit}>
+                <h1>Plant a Letter Box</h1>
                 <button onClick={() => execute()}>Execute</button> 
                 <div>&nbsp;</div>
                 <label htmlFor="letter-plant-name">Name:

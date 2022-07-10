@@ -149,34 +149,11 @@ function MintStamp() {
           console.log("userJson = ", userJSON)
           let stampList = [];
           //get stamps
-          fetch(userJSON)
+          await fetch(userJSON)
                 .then(response => response.json())
                 .then(data => {
                     stampList.push({src: data.media_uri_image})
                 })
-
-          //get letterboxes
-        //   let allLetterboxes = await contract.letterboxList(); //array of tokenIds
-        //   let imageList = [];
-        //   for (let i = 0; i < allLetterboxes.length; i++) {
-        //     let iboxResources = await contract.getFullResources(
-        //         allLetterboxes[i].toNumber()
-        //     );
-
-        //     let iboxURI = iboxResources[0].metadataURI;
-        //     console.log("iboxURI = ", iboxURI)
-        //     //fetch on the above url to actually retrieve json as json
-        //     fetch(iboxURI)
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             imageList.push({src: data.media_uri_image})
-        //         })
-
-        //     let iboxResourceId = iboxResources[0].id;
-        //     iboxResourceId = iboxResourceId.toNumber();
-        //     console.log("iboxResourceId = ", iboxResourceId);
-
-        // }
         setState({
             ...state,
             imageUrl: stampList
@@ -193,7 +170,7 @@ function MintStamp() {
         if(active) {
             getNFTs();
         }
-      },[account])
+      },[active === true])
 
       function connectContract() {
         const signer = provider.getSigner();
@@ -215,7 +192,8 @@ function MintStamp() {
             {console.log('State Context: ', state)}
             {console.log('File Context: ', file)}
             {console.log('Account Context: ', account)}
-            <h1>Mint a Stamp</h1>
+            {console.log('Account Active: ', active)}
+            
             {hasMetamask ? (
                 active ? (
                 "Connected! "
@@ -225,8 +203,10 @@ function MintStamp() {
             ) : (
                 "Please install metamask"
             )}
+             {console.log('Stamp URL: ', state.imageUrl)}
             {active ? 
             <form onSubmit={handleSubmit}>
+                <h1>Mint a Stamp</h1>
                 <div>&nbsp;</div>
                 <label htmlFor="letter-stamp-name">Name:
                     <input type="text" name="name" className="form-control" id="letter-stamp-name" onChange={handleNameChange}/>
@@ -260,7 +240,7 @@ function MintStamp() {
                 <div>&nbsp;</div>
                 {<div>
                     <p>Your NFTs</p>
-                    {state.imageUrl.length > 0 ? 
+                    {active === true > 0 ? 
                     state.imageUrl.map(function(imageProps) {
                         console.log('hi');
                         return (

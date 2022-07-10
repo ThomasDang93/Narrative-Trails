@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import MintLetterBox from './components/MintLetterBox';
 import MintStamp from './components/MintStamp';
 import Home from './components/Home';
+import MyCollection from './components/MyCollection';
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
@@ -59,6 +60,7 @@ export default class App extends Component {
             <Route path="/" element={Home} /> 
             <Route path='/plant-letter-box' element={MintLetterBox} /> 
             <Route path='/make-a-stamp-and-hunt' element={MintStamp} />
+            <Route path='/my-collection' element={MyCollection} />
         </Routes>
       </Web3ReactProvider>
       </div>
