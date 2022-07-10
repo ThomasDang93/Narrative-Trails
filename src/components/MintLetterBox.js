@@ -6,11 +6,11 @@ import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
 import fleek from '@fleekhq/fleek-storage-js';  
 
-const DEPLOYED_CONTRACT_ADDRESS = '0xD5565022DE11F6663bfBE872e800D5129C0e20d3';
+const DEPLOYED_CONTRACT_ADDRESS = '0xB291247E38F4FcBaD7C6741Dc25F41bA5702f9c3';
 
 export const injected = new InjectedConnector();
 
-function LetterPlanting() {
+function MintLetterBox() {
     const [hasMetamask, setHasMetamask] = useState(false);
     const {
         active,
@@ -30,8 +30,6 @@ function LetterPlanting() {
         zip: "",
         isLetterBox: true,
         selectedAddress: "",
-        balance: "",
-        ipfsurl: ""
     });
     const [file, setFile] = useState({});
     const handleSubmit = async(event) => {
@@ -45,7 +43,7 @@ function LetterPlanting() {
             const pictureResult = await fleek.upload( {
                 apiKey: process.env.REACT_APP_FLEEK_API_KEY,
                 apiSecret: process.env.REACT_APP_FLEEK_API_SECRET,
-                key: `narrativetrails/letterbox`,
+                key: `narrativetrails/letterbox/` + uuid(),
                 data: formData.get('File'),
               });
 
@@ -68,7 +66,7 @@ function LetterPlanting() {
             const metaDataResult = await fleek.upload( {
                 apiKey: process.env.REACT_APP_FLEEK_API_KEY,
                 apiSecret: process.env.REACT_APP_FLEEK_API_SECRET,
-                key: `narrativetrails/letterbox-metadata`,
+                key: `narrativetrails/letterbox-metadata2/` + uuid(),
                 data: JSON.stringify(metaData),
               });
             console.log(metaDataResult);
@@ -81,6 +79,13 @@ function LetterPlanting() {
             alert("Please enter value for all fields");
         }
     }
+
+    function uuid() {
+        var temp_url = URL.createObjectURL(new Blob());
+        var uuid = temp_url.toString();
+        URL.revokeObjectURL(temp_url);
+        return uuid.substr(uuid.lastIndexOf('/') + 1); // remove prefix (e.g. blob:null/, blob:www.test.com/, ...)
+     }
 
     function handleFileChange(event) {
         setFile(event.target.files[0]);
@@ -109,21 +114,6 @@ function LetterPlanting() {
     function handleDescriptionChange(event) {
         setState({...state, description: event.target.value});
     }
-
-
-    async function addFile(ipfs, fileContent) {
-        // 1. Add file to ipfs
-        const cid = await ipfs.add(fileContent);
-
-        // 2. Get file status from ipfs
-        const fileStat = await ipfs.files.stat("/ipfs/" + cid.path);
-
-        return {
-            cid: cid.path,
-            size: fileStat.cumulativeSize
-        };
-    }
-
     async function connect() {
         if (typeof window.ethereum !== "undefined") {
           try {
@@ -142,6 +132,43 @@ function LetterPlanting() {
           const contractAddress = DEPLOYED_CONTRACT_ADDRESS;
           const contract = new ethers.Contract(contractAddress, LetterBoxingABI["abi"], signer);
           try {
+            let userStamp = await contract.stampsHeldBy(account);
+            
+            userStamp = userStamp.toNumber();
+            console.log("userStamp: ", userStamp);
+            let userResources = await contract.getFullResources(userStamp);
+            let userResource0 = userResources[0].id; // this gives resource id.
+            userResource0 = userResource0.toNumber();
+
+            let tokenId = 2; //CHANGE HARDCODING TO BE FROM URL OF LETTERBOX THAT ACTUALLY EXISTS
+            let letterboxSize = await contract.getFullResources(tokenId);
+            let letterboxResource0 = letterboxSize[0].id;
+            letterboxResource0 = letterboxResource0.toNumber();
+            letterboxSize = letterboxSize.length;
+            console.log("letterboxSize: ", letterboxSize);
+            //stamps letterbox
+            await contract.addResourceToToken(tokenId, userResource0, letterboxSize);
+            
+            //adding letterbox to stamp
+            await contract.addResourceToToken(
+                userStamp,
+                letterboxResource0,
+                userResources.length + 1
+              );
+
+            await contract.acceptResource(userStamp, 0);
+
+            //test
+            userResources = await contract.getFullResources(userStamp);
+            console.log(
+                ".. post stamping of letterbox the stamp has ",
+                userResources.length,
+                " resources"
+            );
+
+            // fetch('https://storageapi.fleek.co/8d3169a1-da25-443a-8e1f-a83ff25c6b1c-bucket/narrativetrails/letterbox-metadata2')
+            //     .then(response => response.json())
+            //     .then(data => console.log(data))
             //let jsonuri = await contract.getFullResources(1);
             // console.log("json uri: ", jsonuri[0].metadataURI);
              //contract.mintStamp('0x609cB97e273011Ab5D56e73cF880D2880F9922f6', 'https://crustipfs.xyz/ipfs/QmPRADZ7z3wKpcA1N15CJevovVR6eNkwTMvzjxVy1PcTTw')
@@ -168,6 +195,7 @@ function LetterPlanting() {
         <div>
             {console.log('State Context: ', state)}
             {console.log('File Context: ', file)}
+            <h1>Plant a Letter Box</h1>
             {hasMetamask ? (
                 active ? (
                 "Connected! "
@@ -179,7 +207,7 @@ function LetterPlanting() {
             )}
             {active ? 
             <form onSubmit={handleSubmit}>
-                <button onClick={() => execute()}>Execute</button>
+                <button onClick={() => execute()}>Execute</button> 
                 <div>&nbsp;</div>
                 <label htmlFor="letter-plant-name">Name:
                     <input type="text" name="name" className="form-control" id="letter-plant-name" onChange={handleNameChange}/>
@@ -215,4 +243,4 @@ function LetterPlanting() {
         </div>
     );
 }
-export default <LetterPlanting/>
+export default <MintLetterBox/>
