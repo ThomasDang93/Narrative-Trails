@@ -6,6 +6,7 @@ import MintStamp from './components/MintStamp';
 import Home from './components/Home';
 import MyCollection from './components/MyCollection';
 import LetterBoxDetails from './components/LetterBoxDetails.js';
+import StampDetails from './components/StampDetails.js'
 import MetamaskProvider from './components/MetamaskProvider.js';
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
@@ -65,6 +66,7 @@ export default class App extends Component {
               <Route path='/make-a-stamp-and-hunt' element={MintStamp} />
               <Route path='/my-collection' element={MyCollection} />
               <Route path='/letterbox/:id' element={LetterBoxDetails} />
+              <Route path='/stamp/:id' element={StampDetails} />
           </Routes>
         </MetamaskProvider>
       </Web3ReactProvider>

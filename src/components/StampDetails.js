@@ -13,7 +13,7 @@ export const injected = new InjectedConnector();
 const DEPLOYED_CONTRACT_ADDRESS = constants.DEPLOYED_CONTRACT_ADDRESS;
 
 function StampDetails () {
-  const { id } = useParams();
+  const { uri } = useParams();
   const {
     active,
     activate,
@@ -29,63 +29,48 @@ function StampDetails () {
         lattitude: "",
         longitude: "",
         state: "",
-        zip: "",
-        letterBoxList: []
+        zip: ""
   });
 
 
   useEffect(() => {
-    getLetterBox();
+    getStamp();
   },[active])
 
-  async function getLetterBox() {
+  async function getStamp() {
     const contract = connectContract();
-    console.log("ID: ", id)
-    let resources = await contract.getFullResources(id);
-    for(let i = 1; i < resources.length; i++) {
-        let resourceURI = resources[i].metadataURI;
-        console.log("JSON URI: ", resourceURI);
-        await fetch(resourceURI)
-            .then(response => response.json())
-            .then(data => {
-                    stampList.push({src: data.media_uri_image});
-                })
-    }
-    // setState({
-    //     ...state,
-    //     name: letterboxList.name,
-    //     description: letterboxList.description,
-    //     src: letterboxList.src,
-    //     city: letterboxList.city,
-    //     country: letterboxList.country,
-    //     lattitude: letterboxList.lattitude,
-    //     longitude: letterboxList.longitude,
-    //     state: letterboxList.state,
-    //     zip: letterboxList.zip
-    // })
+    let resourceURI = uri;
+    let stampMetaData;
+    await fetch(resourceURI)
+        .then(response => response.json())
+        .then(data => {
+            stampMetaData = {
+                name: data.name,
+                description: data.description,
+                src: data.media_uri_image,
+                city: data.properties.city,
+                country: data.properties.country,
+                lattitude: data.properties.lattitude,
+                longitude: data.properties.longitude,
+                state: data.properties.state,
+                zip: data.properties.zip
+
+        }
+            })
+    setState({
+        ...state,
+        name: stampMetaData.name,
+        description: stampMetaData.description,
+        src: stampMetaData.src,
+        city: stampMetaData.city,
+        country: stampMetaData.country,
+        lattitude: stampMetaData.lattitude,
+        longitude: stampMetaData.longitude,
+        state: stampMetaData.state,
+        zip: stampMetaData.zip
+    })
 }
 
-async function foundLetterbox() {
-    if (active) {
-      console.log(provider.getSigner())
-      const signer = provider.getSigner();
-      const contractAddress = DEPLOYED_CONTRACT_ADDRESS;
-      const contract = new ethers.Contract(contractAddress, LetterBoxingABI["abi"], signer);
-      try{
-        let letterboxResources = await contract.getFullResources(id);
-        console.log('letterbox resource count: ', letterboxResources.length);
-        await contract.stampToLetterbox(account, id, true);
-        await contract.letterboxToStamp(account, id);
-        letterboxResources = await contract.getFullResources(id);
-
-      } catch(error) {
-        console.log(error);
-      }
-        
-    } else {
-      console.log("Please install MetaMask");
-    }
-  }
 
 function connectContract() {
     const signer = provider.getSigner();
@@ -96,7 +81,7 @@ function connectContract() {
   return (
     <div>
         {console.log("State: ", state)}
-      <h2>Letter Box - { id }</h2>
+      <h2>Stamp</h2>
       <img key={ state.src } src={ state.src } alt="no image" width="100" height="100"/>
       <p>Name: {state.name}</p>
       <p>Description: {state.description}</p>
@@ -106,7 +91,6 @@ function connectContract() {
       <p>Zip: {state.zip}</p>
       <p>Lattitude: {state.lattitude}</p>
       <p>Longitude: {state.longitude}</p>
-      <button onClick={() => foundLetterbox()}>I found it!</button> 
       <div>&nbsp;</div>
     </div>
   );
