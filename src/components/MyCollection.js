@@ -4,8 +4,11 @@ import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
+import LetterBoxList from "./LetterBoxList";
+import MyStamp from "./MyStamp";
+import * as  constants from './constants.js';
 
-const DEPLOYED_CONTRACT_ADDRESS = '0xB291247E38F4FcBaD7C6741Dc25F41bA5702f9c3';
+const DEPLOYED_CONTRACT_ADDRESS = constants.DEPLOYED_CONTRACT_ADDRESS;
 
 export const injected = new InjectedConnector();
 
@@ -18,18 +21,6 @@ function MyCollection() {
         library: provider,
       } = useWeb3React();
     const [state, setState] = useState(    {
-        name: "",
-        lattitude: "",
-        longitude: "",
-        description: "",
-        city: "",
-        state: "",
-        country: "",
-        zip: "",
-        isStamp: true,
-        selectedAddress: "",
-        balance: "",
-        errors: "",
         letterBoxList: [],
         stampList: []
     });
@@ -47,7 +38,7 @@ function MyCollection() {
 
       async function getNFTs() {
           const contract = connectContract();
-          let userStamp = await contract.stampsHeldBy(account); //returns tokenId
+          let userStamp = await contract.stampHeldBy(account); //returns tokenId
           userStamp = userStamp.toNumber();
           console.log("userStamp = ", userStamp);
           let userResources = await contract.getFullResources(userStamp); //returns array of resources
@@ -66,6 +57,7 @@ function MyCollection() {
           let allLetterboxes = await contract.letterboxList(); //array of tokenIds
           let letterBoxList = [];
           for (let i = 0; i < allLetterboxes.length; i++) {
+            console.log("letterbox ID: ", allLetterboxes[i].toNumber());
             let iboxResources = await contract.getFullResources(
                 allLetterboxes[i].toNumber()
             );
@@ -76,7 +68,18 @@ function MyCollection() {
             await fetch(iboxURI)
                 .then(response => response.json())
                 .then(data => {
-                    letterBoxList.push({src: data.media_uri_image})
+                    letterBoxList.push({
+                      id: allLetterboxes[i].toNumber(),
+                      name: data.name,
+                      description: data.description,
+                      src: data.media_uri_image,
+                      city: data.properties.city,
+                      country: data.properties.country,
+                      lattitude: data.properties.lattitude,
+                      longitude: data.properties.longitude,
+                      state: data.properties.state,
+                      zip: data.properties.zip
+                    })
                 })
 
         }
@@ -125,18 +128,10 @@ function MyCollection() {
             <form >
                 <div>&nbsp;</div>
                 <h1>Letterboxes</h1>
-                {<div>
-                    {state.letterBoxList.length > 0 ? 
-                    state.letterBoxList.map(function(imageProps) {
-                        return (
-                            <img key={ imageProps.src } src={ imageProps.src } alt="no image" width="100" height="100"/>
-                        );
-                    })
-                    : ""}
-
-                </div>}
+                <LetterBoxList letterbox={state} />
                 <div>&nbsp;</div>
                 <h1>Stamps</h1>
+                {/* <MyStamp stamp={state} /> */}
                 {<div>
                     {state.stampList.length > 0 ? 
                     state.stampList.map(function(imageProps) {
@@ -146,7 +141,7 @@ function MyCollection() {
                     })
                     : ""}
                     
-                </div>}
+                </div>} 
             </form> : ""}
         </div>
     );

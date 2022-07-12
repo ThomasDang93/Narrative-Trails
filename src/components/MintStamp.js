@@ -5,8 +5,9 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
 import fleek from '@fleekhq/fleek-storage-js';  
+import * as  constants from './constants.js';
 
-const DEPLOYED_CONTRACT_ADDRESS = '0xB291247E38F4FcBaD7C6741Dc25F41bA5702f9c3';
+const DEPLOYED_CONTRACT_ADDRESS = constants.DEPLOYED_CONTRACT_ADDRESS;
 
 export const injected = new InjectedConnector();
 
@@ -141,7 +142,7 @@ function MintStamp() {
 
       async function getNFTs() {
           const contract = connectContract();
-          let userStamp = await contract.stampsHeldBy(account); //returns tokenId
+          let userStamp = await contract.stampHeldBy(account); //returns tokenId
           userStamp = userStamp.toNumber();
           console.log("userStamp = ", userStamp);
           let userResources = await contract.getFullResources(userStamp); //returns array of resources
@@ -239,7 +240,7 @@ function MintStamp() {
                 <button type="submit" className="btn btn-success">Mint</button>
                 <div>&nbsp;</div>
                 {<div>
-                    <p>Your NFTs</p>
+                    <p>Your Stamp</p>
                     {active === true > 0 ? 
                     state.imageUrl.map(function(imageProps) {
                         console.log('hi');

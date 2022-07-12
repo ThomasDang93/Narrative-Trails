@@ -5,8 +5,10 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
 import fleek from '@fleekhq/fleek-storage-js';  
+import * as  constants from './constants.js';
 
-const DEPLOYED_CONTRACT_ADDRESS = '0xB291247E38F4FcBaD7C6741Dc25F41bA5702f9c3';
+
+const DEPLOYED_CONTRACT_ADDRESS = constants.DEPLOYED_CONTRACT_ADDRESS;
 
 export const injected = new InjectedConnector();
 
@@ -66,7 +68,7 @@ function MintLetterBox() {
             const metaDataResult = await fleek.upload( {
                 apiKey: process.env.REACT_APP_FLEEK_API_KEY,
                 apiSecret: process.env.REACT_APP_FLEEK_API_SECRET,
-                key: `narrativetrails/letterbox-metadata2/` + uuid(),
+                key: `narrativetrails/letterbox-metadata/` + uuid(),
                 data: JSON.stringify(metaData),
               });
             console.log(metaDataResult);
@@ -131,55 +133,23 @@ function MintLetterBox() {
           const signer = provider.getSigner();
           const contractAddress = DEPLOYED_CONTRACT_ADDRESS;
           const contract = new ethers.Contract(contractAddress, LetterBoxingABI["abi"], signer);
-          try {
-            let userStamp = await contract.stampsHeldBy(account);
-            
+          try{
+            let userStamp = await contract.stampHeldBy(account);
             userStamp = userStamp.toNumber();
             console.log("userStamp: ", userStamp);
-            let userResources = await contract.getFullResources(userStamp);
-            let userResource0 = userResources[0].id; // this gives resource id.
-            userResource0 = userResource0.toNumber();
+            let letterBoxList = await contract.letterboxList();
+            let letterBoxId = letterBoxList[0];
+            let letterboxResources = await contract.getFullResources(letterBoxId.toNumber());
+            console.log('letterbox resource count(before): ', letterboxResources.length);
+            await contract.stampToLetterbox(account, letterBoxId.toNumber(), true);
+            await contract.letterboxToStamp(account, letterBoxId.toNumber());
+            letterboxResources = await contract.getFullResources(letterBoxId.toNumber());
+            console.log('letterbox resource count(after): ', letterboxResources.length);
 
-            let tokenId = 2; //CHANGE HARDCODING TO BE FROM URL OF LETTERBOX THAT ACTUALLY EXISTS
-            let letterboxSize = await contract.getFullResources(tokenId);
-            let letterboxResource0 = letterboxSize[0].id;
-            letterboxResource0 = letterboxResource0.toNumber();
-            letterboxSize = letterboxSize.length;
-            console.log("letterboxSize: ", letterboxSize);
-            //stamps letterbox
-            // await contract.addResourceToToken(tokenId, userResource0, letterboxSize);
-            
-            //adding letterbox to stamp
-            await contract.addResourceToToken(
-                userStamp,
-                letterboxResource0,
-                userResources.length + 1
-              );
-
-            await contract.acceptResource(userStamp, 0);
-
-            //test
-            userResources = await contract.getFullResources(userStamp);
-            console.log(
-                ".. post stamping of letterbox the stamp has ",
-                userResources.length,
-                " resources"
-            );
-
-            // fetch('https://storageapi.fleek.co/8d3169a1-da25-443a-8e1f-a83ff25c6b1c-bucket/narrativetrails/letterbox-metadata2')
-            //     .then(response => response.json())
-            //     .then(data => console.log(data))
-            //let jsonuri = await contract.getFullResources(1);
-            // console.log("json uri: ", jsonuri[0].metadataURI);
-             //contract.mintStamp('0x609cB97e273011Ab5D56e73cF880D2880F9922f6', 'https://crustipfs.xyz/ipfs/QmPRADZ7z3wKpcA1N15CJevovVR6eNkwTMvzjxVy1PcTTw')
-            //let value = await contract.feeSetter(0);
-            //let value2 = await contract.feeGetter();
-            //console.log(value2.toNumber());
-            //let value = await contract.isPaused();
-            //console.log(value);
-          } catch (error) {
+          } catch(error) {
             console.log(error);
           }
+            
         } else {
           console.log("Please install MetaMask");
         }
