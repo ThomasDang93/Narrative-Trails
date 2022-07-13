@@ -98,7 +98,7 @@ async function foundLetterbox() {
         let letterboxResources = await contract.getFullResources(id);
         console.log('letterbox resource count: ', letterboxResources.length);
         await contract.stampToLetterbox(account, id, true);
-        await contract.letterboxToStamp(account, id);
+        await contract.letterboxToStamp(account, id, {gasLimit:500000});
         letterboxResources = await contract.getFullResources(id);
 
       } catch(error) {

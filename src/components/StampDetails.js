@@ -13,7 +13,7 @@ export const injected = new InjectedConnector();
 const DEPLOYED_CONTRACT_ADDRESS = constants.DEPLOYED_CONTRACT_ADDRESS;
 
 function StampDetails () {
-  const { uri } = useParams();
+  const { id } = useParams();
   const {
     active,
     activate,
@@ -39,9 +39,12 @@ function StampDetails () {
 
   async function getStamp() {
     const contract = connectContract();
-    let resourceURI = uri;
+    let userStamp = await contract.stampHeldBy(account); //returns tokenId
+    userStamp = userStamp.toNumber();
+    let userResources = await contract.getFullResources(userStamp); //returns array of resources
+    let userJSON = userResources[0].metadataURI;
     let stampMetaData;
-    await fetch(resourceURI)
+    await fetch(userJSON)
         .then(response => response.json())
         .then(data => {
             stampMetaData = {

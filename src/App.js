@@ -5,8 +5,10 @@ import MintLetterBox from './components/MintLetterBox';
 import MintStamp from './components/MintStamp';
 import Home from './components/Home';
 import MyCollection from './components/MyCollection';
+import FindLetterbox from './components/FindLetterbox';
 import LetterBoxDetails from './components/LetterBoxDetails.js';
 import StampDetails from './components/StampDetails.js'
+import ConnectWallet from './components/ConnectWallet.js'
 import MetamaskProvider from './components/MetamaskProvider.js';
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
@@ -47,11 +49,12 @@ export default class App extends Component {
                   <NavLink tag={Link} className="text-dark" to="/make-a-stamp-and-hunt">Make a Stamp and Hunt</NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink tag={Link} className="text-dark" to="/find-letter-box">Find Letterbox</NavLink>
+                    <NavLink tag={Link} className="text-dark" to="/find-letterbox">Find Letterbox</NavLink>
                 </NavItem>
                 <NavItem>
                     <NavLink tag={Link} className="text-dark" to="/my-collection">My Collection</NavLink>
                 </NavItem>
+                <ConnectWallet/>
               </ul>
             </Collapse>
           </Container>
@@ -66,7 +69,9 @@ export default class App extends Component {
               <Route path='/make-a-stamp-and-hunt' element={MintStamp} />
               <Route path='/my-collection' element={MyCollection} />
               <Route path='/letterbox/:id' element={LetterBoxDetails} />
+              <Route path='/connect' element={ConnectWallet} />
               <Route path='/stamp/:id' element={StampDetails} />
+              <Route path='/find-letterbox' element={FindLetterbox} />
           </Routes>
         </MetamaskProvider>
       </Web3ReactProvider>

@@ -4,7 +4,6 @@ import { useWeb3React } from "@web3-react/core";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
-import LetterBoxList from "./LetterBoxList";
 import MyStamp from "./MyStamp";
 import * as  constants from './constants.js';
 
@@ -50,7 +49,10 @@ function MyCollection() {
           await fetch(userJSON)
                 .then(response => response.json())
                 .then(data => {
-                    stampList.push({src: data.media_uri_image})
+                    stampList.push({
+                      id: userStamp,
+                      src: data.media_uri_image
+                    })
                 })
 
           //get letterboxes
@@ -100,7 +102,7 @@ function MyCollection() {
         if(active) {
             getNFTs();
         }
-      },[account])
+      },[active]);
 
       function connectContract() {
         const signer = provider.getSigner();
@@ -127,21 +129,10 @@ function MyCollection() {
             {active ? 
             <form >
                 <div>&nbsp;</div>
-                <h1>Letterboxes</h1>
-                <LetterBoxList letterbox={state} />
-                <div>&nbsp;</div>
+                {/* <h1>Letterboxes</h1>
+                <div>&nbsp;</div> */}
                 <h1>Stamps</h1>
-                {/* <MyStamp stamp={state} /> */}
-                {<div>
-                    {state.stampList.length > 0 ? 
-                    state.stampList.map(function(imageProps) {
-                        return (
-                            <img key={ imageProps.src } src={ imageProps.src } alt="no image" width="100" height="100"/>
-                        );
-                    })
-                    : ""}
-                    
-                </div>} 
+                <MyStamp stamp={state} />
             </form> : ""}
         </div>
     );

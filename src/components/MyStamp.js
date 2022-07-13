@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 
 function MyStamp ({ stamp }) {
+  
   return (
     <div>
-        {stamp.letterBoxList.length > 0 ? 
-        stamp.letterBoxList.map(function(props) {
+        {stamp.stampList.length > 0 ? 
+        stamp.stampList.map(function(props) {
             return (
             <div key={props.id} >
                 <Link to={`/stamp/${props.id}`}>

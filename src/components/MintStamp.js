@@ -6,6 +6,7 @@ import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
 import fleek from '@fleekhq/fleek-storage-js';  
 import * as  constants from './constants.js';
+import MyStamp from './MyStamp';
 
 const DEPLOYED_CONTRACT_ADDRESS = constants.DEPLOYED_CONTRACT_ADDRESS;
 
@@ -32,7 +33,7 @@ function MintStamp() {
         selectedAddress: "",
         balance: "",
         errors: "",
-        imageUrl: []
+        stampList: []
     });
     const [file, setFile] = useState({});
     const handleSubmit = async(event) => {
@@ -153,11 +154,14 @@ function MintStamp() {
           await fetch(userJSON)
                 .then(response => response.json())
                 .then(data => {
-                    stampList.push({src: data.media_uri_image})
+                    stampList.push({
+                        id: userStamp,
+                        src: data.media_uri_image
+                    })
                 })
         setState({
             ...state,
-            imageUrl: stampList
+            stampList: stampList
         });
       }
 
@@ -204,7 +208,7 @@ function MintStamp() {
             ) : (
                 "Please install metamask"
             )}
-             {console.log('Stamp URL: ', state.imageUrl)}
+             {console.log('Stamp URL: ', state.stampList)}
             {active ? 
             <form onSubmit={handleSubmit}>
                 <h1>Mint a Stamp</h1>
@@ -241,14 +245,15 @@ function MintStamp() {
                 <div>&nbsp;</div>
                 {<div>
                     <p>Your Stamp</p>
-                    {active === true > 0 ? 
-                    state.imageUrl.map(function(imageProps) {
+                    <MyStamp stamp={state}/>
+                    {/* {active === true > 0 ? 
+                    state.stampList.map(function(imageProps) {
                         console.log('hi');
                         return (
                             <img key={ imageProps.src } src={ imageProps.src } alt="no image" width="100" height="100"/>
                         );
                     })
-                    : ""}
+                    : ""} */}
                 </div>}
             </form> : ""}
         </div>
