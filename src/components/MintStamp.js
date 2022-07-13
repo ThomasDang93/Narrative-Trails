@@ -246,16 +246,8 @@ function MintStamp() {
                 <button type="submit" className="btn btn-success">Mint</button>
                 <div>&nbsp;</div>
                 {<div>
-                    <h2>Your Stamp</h2>
+                    <h2>Your Current Stamp</h2>
                     <MyStamp stamp={state}/>
-                    {/* {active === true > 0 ? 
-                    state.stampList.map(function(imageProps) {
-                        console.log('hi');
-                        return (
-                            <img key={ imageProps.src } src={ imageProps.src } alt="no image" width="100" height="100"/>
-                        );
-                    })
-                    : ""} */}
                 </div>}
             </form> : <h1 className="center">Connect Wallet</h1>}
         </div>
