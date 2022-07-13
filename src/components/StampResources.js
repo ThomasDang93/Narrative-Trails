@@ -10,10 +10,6 @@ function StampResources ({ letterbox }) {
             <div key={props.id} >
               <Card>
                   <CardImg top width="100%" src={ props.src} alt="Card image cap" />
-                <CardBody>
-                    <CardTitle><h1>{props.name}</h1></CardTitle>
-                    <CardText><b>Description: </b> {props.description}</CardText>
-                </CardBody>
               </Card>
             </div>
             );
