@@ -111,9 +111,9 @@ function FindLetterbox() {
             )}
             {
                 active ? 
-                <div className="center" >
+                <div>
                     <div>&nbsp;</div>
-                    <h1>Letterboxes</h1>
+                    <h1 className="center">Letterboxes</h1>
                     <LetterBoxList letterbox={state}/>
                 </div> 
                 : <h1 className="center">Connect Wallet</h1>

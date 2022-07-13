@@ -7,6 +7,7 @@ import { InjectedConnector } from "@web3-react/injected-connector";
 import './components.css';
 import LetterBoxingABI from "./LetterBoxing.json";
 import * as  constants from './constants.js';
+import StampResources from './StampResources.js';
 import { Card, CardImg, CardText, CardBody,
   CardTitle } from 'reactstrap';
 
@@ -32,7 +33,8 @@ function StampDetails () {
         lattitude: "",
         longitude: "",
         state: "",
-        zip: ""
+        zip: "",
+        letterBoxList: []
   });
 
 
@@ -67,8 +69,19 @@ function StampDetails () {
                 state: data.properties.state,
                 zip: data.properties.zip
 
+        }})
+
+        let letterBoxMeta = [];
+        for(let i = 1; i < userResources.length; i++) {
+          let resourceURI = userResources[i].metadataURI;
+          await fetch(resourceURI)
+              .then(response => response.json())
+              .then(data => {
+                      letterBoxMeta.push({
+                        src: data.media_uri_image
+                      });
+                  })
         }
-            })
     setState({
         ...state,
         name: stampMetaData.name,
@@ -79,7 +92,8 @@ function StampDetails () {
         lattitude: stampMetaData.lattitude,
         longitude: stampMetaData.longitude,
         state: stampMetaData.state,
-        zip: stampMetaData.zip
+        zip: stampMetaData.zip,
+        letterBoxList: letterBoxMeta
     })
 }
 async function connect() {
@@ -129,6 +143,9 @@ function connectContract() {
                 <CardText>{<b>City: </b>} {state.city}</CardText>
               </CardBody>
             </Card>
+            <div>&nbsp;</div>
+            <h2>Letterboxes</h2>
+            <StampResources letterbox={state}/>
       </div>
     </div>
   );
