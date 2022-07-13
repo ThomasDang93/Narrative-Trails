@@ -46,3 +46,9 @@ When the dApp is launched to Moonriver we intend to use Moonsafe multisig so tha
 **Demo Link:**
 
 [https://rapid-mountain-0556.on.fleek.co/](https://rapid-mountain-0556.on.fleek.co/)
+
+**Smart Contracts:**
+0x9892ad54986aA0ec1554557dD5dAF9E2d42dD480
+
+**Smart Contract Repository**
+https://github.com/shawn-nt/LetterboxingContract/tree/master
