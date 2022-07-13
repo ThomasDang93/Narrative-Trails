@@ -84,17 +84,19 @@ function connectContract() {
   return (
     <div>
         {console.log("State: ", state)}
-      <h2>Stamp</h2>
-      <img key={ state.src } src={ state.src } alt="no image" width="100" height="100"/>
-      <p>Name: {state.name}</p>
-      <p>Description: {state.description}</p>
-      <p>City: {state.city}</p>
-      <p>State: {state.state}</p>
-      <p>Country: {state.country}</p>
-      <p>Zip: {state.zip}</p>
-      <p>Lattitude: {state.lattitude}</p>
-      <p>Longitude: {state.longitude}</p>
-      <div>&nbsp;</div>
+        <form>
+          <h2>Stamp</h2>
+          <img key={ state.src } src={ state.src } alt="no image" width="100" height="100"/>
+          <p>Name: {state.name}</p>
+          <p>Description: {state.description}</p>
+          <p>City: {state.city}</p>
+          <p>State: {state.state}</p>
+          <p>Country: {state.country}</p>
+          <p>Zip: {state.zip}</p>
+          <p>Lattitude: {state.lattitude}</p>
+          <p>Longitude: {state.longitude}</p>
+          <div>&nbsp;</div>
+      </form>
     </div>
   );
 }

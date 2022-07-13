@@ -70,7 +70,9 @@ function LetterBoxDetails () {
         await fetch(resourceURI)
             .then(response => response.json())
             .then(data => {
-                    stampList.push({src: data.media_uri_image});
+                    stampList.push({
+                      src: data.media_uri_image
+                    });
                 })
     }
     setState({
@@ -119,20 +121,22 @@ function connectContract() {
   return (
     <div>
         {console.log("State: ", state)}
-      <h2>Letter Box - { id }</h2>
-      <img key={ state.src } src={ state.src } alt="no image" width="100" height="100"/>
-      <p>Name: {state.name}</p>
-      <p>Description: {state.description}</p>
-      <p>City: {state.city}</p>
-      <p>State: {state.state}</p>
-      <p>Country: {state.country}</p>
-      <p>Zip: {state.zip}</p>
-      <p>Lattitude: {state.lattitude}</p>
-      <p>Longitude: {state.longitude}</p>
-      <button onClick={() => foundLetterbox()}>I found it!</button> 
-      <div>&nbsp;</div>
-      <h2>Resources</h2>
-       <StampList stampList={state}/>  
+        <form>
+          <h2>Letter Box - { id }</h2>
+          <img key={ state.src } src={ state.src } alt="no image" width="100" height="100"/>
+          <p>Name: {state.name}</p>
+          <p>Description: {state.description}</p>
+          <p>City: {state.city}</p>
+          <p>State: {state.state}</p>
+          <p>Country: {state.country}</p>
+          <p>Zip: {state.zip}</p>
+          <p>Lattitude: {state.lattitude}</p>
+          <p>Longitude: {state.longitude}</p>
+          <button onClick={() => foundLetterbox()}>I found it!</button> 
+          <div>&nbsp;</div>
+          <h2>Resources</h2>
+          <StampList stampList={state}/>  
+       </form>
     </div>
   );
 }
