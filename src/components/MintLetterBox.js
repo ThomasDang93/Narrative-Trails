@@ -209,7 +209,7 @@ function MintLetterBox() {
                 </label>
                 <div>&nbsp;</div>
                 <button type="submit" className="btn btn-success">Mint</button>
-            </form> : ""}
+            </form> : <h1 className="center">Connect Wallet</h1>}
             
         </div>
     );

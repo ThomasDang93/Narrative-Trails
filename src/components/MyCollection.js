@@ -141,7 +141,7 @@ function MyCollection() {
                 <div>&nbsp;</div> */}
                 <h1>Stamps</h1>
                 <MyStamp stamp={state} />
-            </div> : ""}
+            </div> : <h1 className="center">Connect Wallet</h1>}
         </div>
     );
 }

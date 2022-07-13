@@ -109,11 +109,16 @@ function FindLetterbox() {
             ) : (
                 <div className="top-right">Please Install Metamask</div>
             )}
-            <div className="center" >
-                <div>&nbsp;</div>
-                <h1>Letterboxes</h1>
-                <LetterBoxList letterbox={state}/>
-            </div> 
+            {
+                active ? 
+                <div className="center" >
+                    <div>&nbsp;</div>
+                    <h1>Letterboxes</h1>
+                    <LetterBoxList letterbox={state}/>
+                </div> 
+                : <h1 className="center">Connect Wallet</h1>
+            }
+           
         </div>
     );
 }

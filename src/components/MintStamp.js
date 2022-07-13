@@ -257,7 +257,7 @@ function MintStamp() {
                     })
                     : ""} */}
                 </div>}
-            </form> : ""}
+            </form> : <h1 className="center">Connect Wallet</h1>}
         </div>
     );
 }
