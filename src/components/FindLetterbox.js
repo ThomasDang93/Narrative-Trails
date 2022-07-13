@@ -28,6 +28,17 @@ function FindLetterbox() {
     }
     },[active]);
 
+    async function connect() {
+        if (typeof window.ethereum !== "undefined") {
+          try {
+            await activate(injected);
+            setHasMetamask(true);
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+
     async function getNFTs() {
         const contract = connectContract();
 
@@ -67,6 +78,12 @@ function FindLetterbox() {
         });
       }
 
+      useEffect(() => {
+        if (typeof window.ethereum !== "undefined") {
+          setHasMetamask(true);
+        }
+      });
+
       function connectContract() {
         const signer = provider.getSigner();
         const contractAddress = DEPLOYED_CONTRACT_ADDRESS;
@@ -76,10 +93,22 @@ function FindLetterbox() {
       
     
     return (
-        <div>
+        <div >
             {console.log('State Context: ', state)}
             {console.log('Account Context: ', account)}
             {console.log('Account Active: ', active)}
+            {console.log('State Context: ', state)}
+            {console.log('Account Context: ', account)}
+            {console.log('Account Active: ', active)}
+            {hasMetamask ? (
+                active ? (
+                <div className="top-right">Connected</div>
+                ) : (
+                    <button className="top-right" onClick={() => connect()}>Connect</button>
+                )
+            ) : (
+                <div className="top-right">Please Install Metamask</div>
+            )}
             <div className="center" >
                 <div>&nbsp;</div>
                 <h1>Letterboxes</h1>

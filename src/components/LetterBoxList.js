@@ -3,7 +3,7 @@ import { Card, CardImg, CardText, CardBody,
   CardTitle, Button } from 'reactstrap';
 function LetterBoxList ({ letterbox }) {
   return (
-    <div>
+    <div className="container">
         {letterbox.letterBoxList.length > 0 ? 
         letterbox.letterBoxList.map(function(props) {
             return (

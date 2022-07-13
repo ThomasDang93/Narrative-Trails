@@ -50,9 +50,13 @@ a.navbar-brand {
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-gap: 10px;
+  grid-gap: 20px;
 }
 
 .grid img {
   width: 100%;
+}
+
+.container {
+  columns: 2 auto;
 }

@@ -246,7 +246,7 @@ function MintStamp() {
                 <button type="submit" className="btn btn-success">Mint</button>
                 <div>&nbsp;</div>
                 {<div>
-                    <p>Your Stamp</p>
+                    <h2>Your Stamp</h2>
                     <MyStamp stamp={state}/>
                     {/* {active === true > 0 ? 
                     state.stampList.map(function(imageProps) {

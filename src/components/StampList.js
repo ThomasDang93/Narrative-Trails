@@ -2,7 +2,7 @@ import './components.css';
 import { Card, CardImg} from 'reactstrap';
 function StampList ({ stampList }) {
   return (
-    <div>
+    <div className="grid">
         {stampList.stampBoxList.length > 0 ? 
         stampList.stampBoxList.map(function(props) {
             return (

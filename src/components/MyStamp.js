@@ -8,7 +8,7 @@ function MyStamp ({ stamp }) {
         {stamp.stampList.length > 0 ? 
         stamp.stampList.map(function(props) {
             return (
-            <div key={props.id} >
+            <div key={props.id}  >
                 <Card>
                   <Link to={`/stamp/${props.id}`}>
                     <CardImg top width="100%" src={ props.src} alt="Card image cap" />
