@@ -80,12 +80,11 @@ function FindLetterbox() {
             {console.log('State Context: ', state)}
             {console.log('Account Context: ', account)}
             {console.log('Account Active: ', active)}
-            {active ? 
-            <form >
+            <div className="center" >
                 <div>&nbsp;</div>
                 <h1>Letterboxes</h1>
                 <LetterBoxList letterbox={state}/>
-            </form> : ""}
+            </div> 
         </div>
     );
 }

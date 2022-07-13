@@ -168,17 +168,17 @@ function MintLetterBox() {
             
             {hasMetamask ? (
                 active ? (
-                "Connected! "
+                <div className="top-right">Connected</div>
                 ) : (
-                <button onClick={() => connect()}>Connect</button>
+                    <button className="top-right" onClick={() => connect()}>Connect</button>
                 )
             ) : (
-                "Please install metamask"
+                <div className="top-right">Please Install Metamask</div>
             )}
             {active ? 
             <form onSubmit={handleSubmit}>
                 <h1>Plant a Letter Box</h1>
-                <button onClick={() => execute()}>Execute</button> 
+                {/* <button onClick={() => execute()}>Execute</button>  */}
                 <div>&nbsp;</div>
                 <label htmlFor="letter-plant-name">Name:
                     <input type="text" name="name" className="form-control" id="letter-plant-name" onChange={handleNameChange}/>

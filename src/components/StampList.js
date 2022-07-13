@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-
+import './components.css';
+import { Card, CardImg} from 'reactstrap';
 function StampList ({ stampList }) {
   return (
     <div>
@@ -7,9 +7,9 @@ function StampList ({ stampList }) {
         stampList.stampBoxList.map(function(props) {
             return (
             <div key={props.src} >
-                <Link to={`/stamp/${props.src}`}>
-                    <img key={ props.src } src={ props.src } alt="no image" width="100" height="100"/>
-                </Link>
+                <Card>
+                  <CardImg top width="100%" src={ props.src} alt="Card image cap" />
+                </Card>
             </div>
             );
         })

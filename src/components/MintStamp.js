@@ -156,6 +156,8 @@ function MintStamp() {
                 .then(data => {
                     stampList.push({
                         id: userStamp,
+                        name: data.name,
+                        description: data.description,
                         src: data.media_uri_image
                     })
                 })
@@ -201,12 +203,12 @@ function MintStamp() {
             
             {hasMetamask ? (
                 active ? (
-                "Connected! "
+                <div className="top-right">Connected</div>
                 ) : (
-                <button onClick={() => connect()}>Connect</button>
+                    <button className="top-right" onClick={() => connect()}>Connect</button>
                 )
             ) : (
-                "Please install metamask"
+                <div className="top-right">Please Install Metamask</div>
             )}
              {console.log('Stamp URL: ', state.stampList)}
             {active ? 

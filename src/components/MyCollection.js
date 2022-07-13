@@ -51,7 +51,15 @@ function MyCollection() {
                 .then(data => {
                     stampList.push({
                       id: userStamp,
-                      src: data.media_uri_image
+                      src: data.media_uri_image,
+                      name: data.name,
+                      description: data.description,
+                      city: data.properties.city,
+                      country: data.properties.country,
+                      lattitude: data.properties.lattitude,
+                      longitude: data.properties.longitude,
+                      state: data.properties.state,
+                      zip: data.properties.zip
                     })
                 })
 
@@ -119,21 +127,21 @@ function MyCollection() {
             {console.log('Account Active: ', active)}
             {hasMetamask ? (
                 active ? (
-                "Connected! "
+                <div className="top-right">Connected</div>
                 ) : (
-                <button onClick={() => connect()}>Connect</button>
+                    <button className="top-right" onClick={() => connect()}>Connect</button>
                 )
             ) : (
-                "Please install metamask"
+                <div className="top-right">Please Install Metamask</div>
             )}
             {active ? 
-            <form >
+            <div className="center">
                 <div>&nbsp;</div>
                 {/* <h1>Letterboxes</h1>
                 <div>&nbsp;</div> */}
                 <h1>Stamps</h1>
                 <MyStamp stamp={state} />
-            </form> : ""}
+            </div> : ""}
         </div>
     );
 }

@@ -54,7 +54,6 @@ export default class App extends Component {
                 <NavItem>
                     <NavLink tag={Link} className="text-dark" to="/my-collection">My Collection</NavLink>
                 </NavItem>
-                <ConnectWallet/>
               </ul>
             </Collapse>
           </Container>

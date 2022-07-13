@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-
+import { Card, CardImg, CardText, CardBody,
+  CardTitle, Button } from 'reactstrap';
 function MyStamp ({ stamp }) {
   
   return (
@@ -8,9 +9,18 @@ function MyStamp ({ stamp }) {
         stamp.stampList.map(function(props) {
             return (
             <div key={props.id} >
-                <Link to={`/stamp/${props.id}`}>
-                    <img key={ props.src } src={ props.src } alt="no image" width="100" height="100"/>
-                </Link>
+                <Card>
+                  <Link to={`/stamp/${props.id}`}>
+                    <CardImg top width="100%" src={ props.src} alt="Card image cap" />
+                  </Link>
+                  <CardBody>
+                    <CardTitle><h1>{props.name} {" #"}{props.id}</h1></CardTitle>
+                    <CardText><b>Description: </b> {props.description}</CardText>
+                    <Link to={`/stamp/${props.id}`}>
+                      <Button>View</Button>
+                    </Link>
+                  </CardBody>
+                </Card>
             </div>
             );
         })
