@@ -72,7 +72,7 @@ function Home() {
             <p>Someone hides a letterbox: a stamp and a notebook in a box.</p>
             <p>You use their clues to go find it! (complexity and difficulty varies)</p>
             <p>Stamp swap! Use your stamp in the letterbox log, and stamp your notebook with the one you found!</p>
-            <p>(if you are new, read more to get the full details.. (pnk to about page) ) </p>
+            <p>(if you are new, read more to get the full details.. ) </p>
             <h2>Multi-resource NFTs bring the fun on-chain</h2>
           </div>
     );
